@@ -19,7 +19,6 @@ Remove after merging into 'main' branch or if rejected.
 Code that is ready to be deployed for testing to DEV and TEST environments. Not for local development.
 ##### 'feature/', 'bugfix/' and other branches
 Name them so: '[type]/[issue-number]/[task-title]'
-Remove after merging into 'develop' branch.
 
 ### Messages
 To maintain an explicit commit history that makes it easy to cherrypick, please adhere to  the Conventional Commits Specification. The commit message should be structured as follows:
