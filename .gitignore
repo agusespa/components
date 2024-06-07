@@ -1,3 +1,39 @@
-.DS_Store
-
+# dependencies
+*/node_modules
+/.pnp
+.pnp.js
 __pycache__
+
+# testing
+*/coverage
+
+# bundling
+VERSION
+/data/self-service/module.bundle.js
+/module/build
+/module/version.js
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+
