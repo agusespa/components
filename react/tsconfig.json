@@ -19,6 +19,6 @@
         "noImplicitAny": true,
         "noImplicitReturns": true
     },
-    "include": ["webpack.config.js", "src"],
+    "include": ["webpack.config.js", "src/**/*"],
     "exclude": ["node_modules", "dist"]
 }
