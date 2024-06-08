@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from 'react';
-import { CursorPosition } from '../models/utils';
+import { CSSPosition, CursorPosition } from '../models/utils';
 import { getUpdatedCSSPosition } from '../helpers/helpers';
 import * as styles from './ContextMenu.module.css';
 
@@ -10,19 +10,33 @@ interface Props {
 }
 
 const ContextMenu = (props: Props): ReactElement => {
-    const [width, setWidth] = useState(0);
-    const [height, setHeight] = useState(0);
-
     const ref = useRef<HTMLDivElement>(null);
-
-    // useScrollLock();
+    const [updatedPosition, setUpdatedPosition] = useState<CSSPosition>({
+        top: '0px',
+        left: '0px',
+        visibility: 'hidden',
+    });
 
     useEffect(() => {
-        if (ref.current !== null) {
-            setWidth(ref.current.offsetWidth);
-            setHeight(ref.current.offsetHeight);
-        }
-    }, []);
+        let isPositionSet = false;
+
+        const trySetPosition = (): void => {
+            if (ref.current) {
+                const { offsetWidth, offsetHeight } = ref.current;
+                const position = getUpdatedCSSPosition(offsetWidth, offsetHeight, props.position);
+                setUpdatedPosition(position);
+                isPositionSet = true;
+            }
+        };
+
+        trySetPosition();
+
+        if (isPositionSet) return;
+
+        trySetPosition();
+    }, [props.position]);
+
+    // useScrollLock();
 
     return (
         <>
@@ -32,7 +46,7 @@ const ContextMenu = (props: Props): ReactElement => {
                 ref={ref}
                 onClick={() => props.setIsShown(false)}
                 className={styles.contextMenuContainer}
-                style={getUpdatedCSSPosition(width, height, props.position)}></div>
+                style={updatedPosition}></div>
         </>
     );
 };
