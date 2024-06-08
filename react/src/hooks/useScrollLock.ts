@@ -2,18 +2,14 @@ import { useEffect } from 'react';
 
 const useScrollLock = (): void => {
     useEffect(() => {
-        const disableScroll = (): void => {
-            document.body.style.overflow = 'hidden';
-        };
+        const preventDefault = (e: Event): void => e.preventDefault();
 
-        const enableScroll = (): void => {
-            document.body.style.overflow = 'visible';
-        };
+        window.addEventListener('wheel', preventDefault, { passive: false });
+        window.addEventListener('touchmove', preventDefault, { passive: false });
 
-        disableScroll();
-
-        return () => {
-            enableScroll();
+        return (): void => {
+            window.removeEventListener('wheel', preventDefault);
+            window.removeEventListener('touchmove', preventDefault);
         };
     }, []);
 };

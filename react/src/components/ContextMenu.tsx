@@ -1,7 +1,15 @@
-import { Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+    Dispatch,
+    ReactElement,
+    SetStateAction,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { CSSPosition, CursorPosition } from '../models/utils';
 import { getUpdatedCSSPosition } from '../helpers/helpers';
 import * as styles from './ContextMenu.module.css';
+import useScrollLock from '../hooks/useScrollLock';
 
 interface Props {
     position: CursorPosition;
@@ -17,9 +25,10 @@ const ContextMenu = (props: Props): ReactElement => {
         visibility: 'hidden',
     });
 
+    useScrollLock();
+
     useEffect(() => {
         let isPositionSet = false;
-
         const trySetPosition = (): void => {
             if (ref.current) {
                 const { offsetWidth, offsetHeight } = ref.current;
@@ -28,19 +37,18 @@ const ContextMenu = (props: Props): ReactElement => {
                 isPositionSet = true;
             }
         };
-
         trySetPosition();
-
         if (isPositionSet) return;
-
         trySetPosition();
     }, [props.position]);
 
-    // useScrollLock();
+    function handleClickOutside(): void {
+        props.setIsShown(false);
+    }
 
     return (
         <>
-            <div className={styles.backdrop} onClick={() => props.setIsShown(false)} />
+            <div className={styles.backdrop} onClick={handleClickOutside} />
 
             <div
                 ref={ref}

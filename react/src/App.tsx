@@ -7,7 +7,7 @@ const App = (): ReactElement => {
     const [isContextMenuShown, setIsContextMenuShown] = useState(false);
     const [cursorPosition, setCursorPosition] = useState({} as CursorPosition);
 
-    const handleSecondaryClick = (event: MouseEvent): void => {
+    function handleSecondaryClick(event: MouseEvent): void {
         event.preventDefault();
         setIsContextMenuShown(true);
         setCursorPosition({ y: event.clientY, x: event.clientX });

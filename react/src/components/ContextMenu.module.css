@@ -8,8 +8,8 @@
 }
 
 .backdrop {
-    inset: 0;
     position: fixed;
+    inset: 0;
     cursor: default;
     background-color: transparent;
     z-index: 10;
