@@ -14,6 +14,13 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.(js|mjs|cjs|ts|tsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                },
+            },
+            {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
@@ -22,17 +29,11 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             modules: {
-                                localIdentName:
-                                    '[name]_[local]__[hash:base64:5]',
+                                localIdentName: '[name]_[local]__[hash:base64:5]',
                             },
                         },
                     },
                 ],
-            },
-            {
-                test: /\.(ts|tsx)$/,
-                exclude: /node_modules/,
-                use: 'ts-loader',
             },
         ],
     },

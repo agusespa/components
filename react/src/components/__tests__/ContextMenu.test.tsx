@@ -1,5 +1,17 @@
+import { render, screen } from '@testing-library/react';
+import ContextMenu from '../ContextMenu';
 
-describe('ContextMenu', () => {
-    it('sets updated position even if ref is not available initially', async () => {
+const mockSetIsShown = jest.fn();
+
+describe('ContextMenu component', () => {
+    it('renders the div with the ref and has visibility visible', () => {
+        const position = { x: 100, y: 100 };
+        const isShown = true;
+
+        render(<ContextMenu position={position} isShown={isShown} setIsShown={mockSetIsShown} />);
+
+        const contextMenuContainer = screen.getByRole('menu');
+        expect(contextMenuContainer).toBeInTheDocument();
+        expect(contextMenuContainer).toHaveStyle('visibility: visible');
     });
 });

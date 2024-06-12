@@ -1,5 +1,7 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  setupFiles: ["./src/__mocks__/jest.setup.js"]
+    testEnvironment: 'node',
+    moduleNameMapper: {
+        '\\.(css)$': 'identity-obj-proxy',
+    },
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };

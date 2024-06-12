@@ -52,6 +52,7 @@ const ContextMenu = (props: Props): ReactElement => {
 
             <div
                 ref={ref}
+                role="menu"
                 onClick={() => props.setIsShown(false)}
                 className={styles.contextMenuContainer}
                 style={updatedPosition}></div>
