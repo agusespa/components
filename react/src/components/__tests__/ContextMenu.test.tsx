@@ -13,5 +13,7 @@ describe('ContextMenu component', () => {
         const contextMenuContainer = screen.getByRole('menu');
         expect(contextMenuContainer).toBeInTheDocument();
         expect(contextMenuContainer).toHaveStyle('visibility: visible');
+        expect(contextMenuContainer.style.left).toBe('100px');
+        expect(contextMenuContainer.style.top).toBe('100px');
     });
 });

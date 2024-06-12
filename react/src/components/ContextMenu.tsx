@@ -1,11 +1,4 @@
-import {
-    Dispatch,
-    ReactElement,
-    SetStateAction,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from 'react';
 import { CSSPosition, CursorPosition } from '../models/utils';
 import { getUpdatedCSSPosition } from '../helpers/helpers';
 import * as styles from './ContextMenu.module.css';
@@ -19,6 +12,7 @@ interface Props {
 
 const ContextMenu = (props: Props): ReactElement => {
     const ref = useRef<HTMLDivElement>(null);
+
     const [updatedPosition, setUpdatedPosition] = useState<CSSPosition>({
         top: '0px',
         left: '0px',
@@ -28,18 +22,11 @@ const ContextMenu = (props: Props): ReactElement => {
     useScrollLock();
 
     useEffect(() => {
-        let isPositionSet = false;
-        const trySetPosition = (): void => {
-            if (ref.current) {
-                const { offsetWidth, offsetHeight } = ref.current;
-                const position = getUpdatedCSSPosition(offsetWidth, offsetHeight, props.position);
-                setUpdatedPosition(position);
-                isPositionSet = true;
-            }
-        };
-        trySetPosition();
-        if (isPositionSet) return;
-        trySetPosition();
+        if (ref?.current) {
+            const { offsetWidth, offsetHeight } = ref.current;
+            const position = getUpdatedCSSPosition(offsetWidth, offsetHeight, props.position);
+            setUpdatedPosition(position);
+        }
     }, [props.position]);
 
     function handleClickOutside(): void {
