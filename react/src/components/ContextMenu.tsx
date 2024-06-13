@@ -1,4 +1,12 @@
-import { Dispatch, ReactElement, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+    Dispatch,
+    ReactElement,
+    SetStateAction,
+    MouseEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { CSSPosition, CursorPosition } from '../models/utils';
 import { getUpdatedCSSPosition } from '../helpers/helpers';
 import * as styles from './ContextMenu.module.css';
@@ -29,18 +37,28 @@ const ContextMenu = (props: Props): ReactElement => {
         }
     }, [props.position]);
 
-    function handleClickOutside(): void {
+    function handleClickOutside(e: MouseEvent): void {
+        e.preventDefault();
+        props.setIsShown(false);
+    }
+
+    function handleClick(e: MouseEvent): void {
+        e.preventDefault();
         props.setIsShown(false);
     }
 
     return (
         <>
-            <div className={styles.backdrop} onClick={handleClickOutside} />
-
+            <div
+                className={styles.backdrop}
+                onClick={handleClickOutside}
+                onContextMenu={handleClickOutside}
+            />
             <div
                 ref={ref}
                 role="menu"
-                onClick={() => props.setIsShown(false)}
+                onContextMenu={handleClick}
+                onClick={handleClick}
                 className={styles.contextMenuContainer}
                 style={updatedPosition}></div>
         </>

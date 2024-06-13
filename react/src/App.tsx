@@ -11,20 +11,20 @@ const App = (): ReactElement => {
         event.preventDefault();
         setIsContextMenuShown(true);
         setCursorPosition({ y: event.clientY, x: event.clientX });
-    };
+    }
 
     return (
         <>
             <main className={styles.mainBody} onContextMenu={handleSecondaryClick}>
                 <h1>React component samples</h1>
-                {isContextMenuShown ? (
-                    <ContextMenu
-                        position={cursorPosition}
-                        isShown={isContextMenuShown}
-                        setIsShown={setIsContextMenuShown}
-                    />
-                ) : null}
             </main>
+            {isContextMenuShown ? (
+                <ContextMenu
+                    position={cursorPosition}
+                    isShown={isContextMenuShown}
+                    setIsShown={setIsContextMenuShown}
+                />
+            ) : null}
             <footer className={styles.footerContainer}>
                 <p>This is for testing scroll locking</p>
             </footer>
