@@ -1,0 +1,22 @@
+# Ignore build directories
+**/build/
+**/cmake-build-debug/
+**/cmake-build-release/
+
+# Ignore CMake-generated files
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/CTestTestfile.cmake
+**/Makefile
+**/DartConfiguration.tcl
+**/lib/
+**/Testing/
+**/_deps/
+
+# Ignore compiler-generated files
+**/*.exe
+**/*.a
+**/*.o
+/test/test_ac_list
+/test/test_ac_string
