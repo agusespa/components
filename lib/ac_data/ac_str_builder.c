@@ -32,8 +32,8 @@ bool _resize_sb_arr(ACStringBuilder *sb, size_t new_capacity) {
 ACStringBuilder *ac_sb_append_char(ACStringBuilder *sb, char c) {
     size_t len = sb->length;
 
-    if (len + 1 == sb->_capacity) {
-        if (!_resize_sb_arr(sb, sb->_capacity*2)) {
+    if (len == sb->_capacity) {
+        if (!_resize_sb_arr(sb, sb->_capacity * 2)) {
             printf(
                 "ERROR: failed to append char due to insufficient capacity\n");
             return sb;
@@ -42,44 +42,41 @@ ACStringBuilder *ac_sb_append_char(ACStringBuilder *sb, char c) {
 
     sb->str_arr[len] = c;
     sb->str_arr[len + 1] = '\0';
-    sb->length = ++len;
+    sb->length++;
 
     return sb;
 }
 
-/* ACStringBuilder *ac_sb_append_str(ACStringBuilder *sb, char *str) { */
-/*     if (str == NULL) { */
-/*         printf("Error: Null pointer passed\n"); */
-/*         return sb; */
-/*     } */
+ACStringBuilder *ac_sb_append_str(ACStringBuilder *sb, const char *str) {
+    if (str == NULL) {
+        printf("ERROR: Null pointer passed\n");
+        return sb;
+    }
 
-/*     size_t len_to_append = strlen(str); */
-/*     if (str[len_to_append] != '\0') { */
-/*         printf("ERROR: Non-null-terminated string passed\n"); */
-/*         return sb; */
-/*     } */
+    size_t len_to_append = strlen(str);
+    size_t len = sb->length;
+    size_t required_capacity = sb->length + len_to_append;
 
-/*     size_t len = sb->length; */
-/*     size_t required_capacity = sb->length + len_to_append + 1; */
-/*     size_t new_capacity = sb->_capacity; */
+    if (required_capacity > sb->_capacity) {
+        size_t new_capacity = sb->_capacity;
 
-/*     if (len_to_append + 1 == sb->_capacity) { */
-/*         while (sb->_capacity < required_capacity) { */
-/*             new_capacity *= 2; */
-/*         } */
-/*         if (!_resize_sb_arr(sb, new_capacity)) { */
-/*             printf( */
-/*                 "ERROR: failed to append char due to insufficient capacity\n"); */
-/*             return sb; */
-/*         } */
-/*     } */
+        while (new_capacity < required_capacity) {
+            new_capacity *= 2;
+        }
 
-/*     sb->str_arr[len] = c; */
-/*     sb->str_arr[len + 1] = '\0'; */
-/*     sb->length = ++len; */
+        if (!_resize_sb_arr(sb, new_capacity)) {
+            printf(
+                "ERROR: failed to append char due to insufficient capacity\n");
+            return sb;
+        }
+    }
 
-/*     return sb; */
-/* } */
+    memcpy(sb->str_arr + len, str, len_to_append * sizeof(char));
+    sb->length += len_to_append;
+    sb->str_arr[sb->length] = '\0';
+
+    return sb;
+}
 
 const char *ac_sb_to_string(ACStringBuilder *sb) { return sb->str_arr; }
 

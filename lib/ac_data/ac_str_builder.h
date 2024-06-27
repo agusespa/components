@@ -18,7 +18,7 @@ ACStringBuilder *ac_sb_init();
 
 ACStringBuilder *ac_sb_append_char(ACStringBuilder *sb, char c);
 
-/* ACStringBuilder *ac_sb_append_str(ACStringBuilder *sb, char *str); */
+ACStringBuilder *ac_sb_append_str(ACStringBuilder *sb, const char *str);
 
 const char *ac_sb_to_string(ACStringBuilder *sb);
 
