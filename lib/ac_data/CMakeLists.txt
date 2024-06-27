@@ -11,7 +11,7 @@ FetchContent_MakeAvailable(googletest)
 include(CTest)
 
 add_library(ac_list ac_list.c ac_list.h)
-add_library(ac_string ac_string.c ac_string.h)
+add_library(ac_str_builder ac_str_builder.c ac_str_builder.h)
 
 add_subdirectory(test)
 
