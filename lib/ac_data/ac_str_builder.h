@@ -18,16 +18,23 @@ ACStringBuilder *ac_sb_init();
 
 ACStringBuilder *ac_sb_append_char(ACStringBuilder *sb, char c);
 
-/* ACString *ac_string_append(ACString *str1, ACString *str2); */
+/* ACStringBuilder *ac_sb_append_str(ACStringBuilder *sb, char *str); */
 
-void ac_sb_free(ACStringBuilder **str);
+const char *ac_sb_to_string(ACStringBuilder *sb);
 
+char ac_sb_get_char_at(ACStringBuilder *sb, size_t i);
+
+const size_t ac_sb_length(ACStringBuilder *sb);
+
+void ac_sb_free(ACStringBuilder **sb);
+
+// TODO
 // substring
 // replace
 // iterator
 // Short String Optimization
 
-bool _resize_sb_arr(ACStringBuilder *sb);
+bool _resize_sb_arr(ACStringBuilder *sb, size_t new_capacity);
 
 #ifdef __cplusplus
 }
