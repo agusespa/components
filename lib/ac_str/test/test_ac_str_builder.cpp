@@ -32,7 +32,7 @@ class ACStrBuilderTest : public ::testing::Test {
         ASSERT_EQ(sb->_capacity, 20);
     }
 
-    void TearDown() override { ac_sb_free(&sb); }
+    void TearDown() override { free(sb); }
 };
 
 TEST_F(ACStrBuilderTest, ResizeDefaultArray) {
@@ -135,8 +135,7 @@ TEST_F(ACStrBuilderTest, AppendOverflowingValidStringToEmptyStringBuilder) {
     EXPECT_STREQ(sb->str, long_str);
 }
 
-TEST_F(ACStrBuilderTest,
-       AppendOverflowingValidStringToBuilderWithoutCapacity) {
+TEST_F(ACStrBuilderTest, AppendOverflowingValidStringToBuilderWithoutCapacity) {
     ac_sb_append_char(sb, 'T');
     EXPECT_EQ(sb->length, 1);
 

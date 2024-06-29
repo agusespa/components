@@ -16,9 +16,9 @@ typedef struct {
 
 ACStrList *ac_str_list_init(size_t initial_capacity);
 
-void ac_str_list_append(ACStrList *sl, char **str);
+void ac_str_list_append(ACStrList *sl, char **str_ptr);
 
-void ac_str_list_replace(ACStrList *sl, char **str, size_t i); //TODO
+void ac_str_list_replace(ACStrList *sl, char **str_ptr, size_t i);
 
 const char *ac_str_list_get_str_at(ACStrList *sl, size_t i);
 

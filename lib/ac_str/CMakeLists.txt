@@ -18,6 +18,8 @@ add_subdirectory(test)
 # Custom target to build and run tests
 add_custom_target(t
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
-    COMMAND ${CMAKE_CTEST_COMMAND} --extra-verbose
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --extra-verbose
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+enable_testing()

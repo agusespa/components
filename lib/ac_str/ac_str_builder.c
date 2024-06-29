@@ -77,7 +77,7 @@ void ac_sb_append_str(ACStrBuilder *sb, const char *str) {
 const char *ac_sb_to_string(ACStrBuilder *sb) { return sb->str; }
 
 const char ac_sb_get_char_at(ACStrBuilder *sb, size_t i) {
-    if (i > sb->length) {
+    if (i >= sb->length) {
         printf("ERROR: index out-of-bounds\n");
         return '\0';
     }
