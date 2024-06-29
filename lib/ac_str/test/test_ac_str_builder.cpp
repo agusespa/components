@@ -2,28 +2,28 @@
 
 #include "../ac_str_builder.h"
 
-TEST(ACStringBuilderInitTest, InitString) {
-    ACStringBuilder *sb = ac_sb_init();
+TEST(ACStrBuilderInitTest, InitString) {
+    ACStrBuilder *sb = ac_sb_init();
     ASSERT_NE(sb, nullptr);
 
-    EXPECT_EQ(sb->str_arr[0], '\0');
+    EXPECT_EQ(sb->str[0], '\0');
     EXPECT_EQ(sb->length, 0);
     EXPECT_EQ(sb->_capacity, 20);
 
     ac_sb_free(&sb);
 }
 
-TEST(ACStringBuilderInitTest, FreeEmptyString) {
-    ACStringBuilder *sb = ac_sb_init();
+TEST(ACStrBuilderInitTest, FreeEmptyString) {
+    ACStrBuilder *sb = ac_sb_init();
     ASSERT_NE(sb, nullptr);
 
     ac_sb_free(&sb);
     EXPECT_EQ(sb, nullptr);
 }
 
-class ACStringBuilderTest : public ::testing::Test {
+class ACStrBuilderTest : public ::testing::Test {
    protected:
-    ACStringBuilder *sb;
+    ACStrBuilder *sb;
 
     void SetUp() override {
         sb = ac_sb_init();
@@ -35,33 +35,33 @@ class ACStringBuilderTest : public ::testing::Test {
     void TearDown() override { ac_sb_free(&sb); }
 };
 
-TEST_F(ACStringBuilderTest, ResizeDefaultArray) {
+TEST_F(ACStrBuilderTest, ResizeDefaultArray) {
     ASSERT_TRUE(_resize_sb_arr(sb, sb->_capacity * 2));
     EXPECT_GE(sb->_capacity, 40);
 }
 
-TEST_F(ACStringBuilderTest, Resize40CapArray) {
+TEST_F(ACStrBuilderTest, Resize40CapArray) {
     sb->_capacity = 40;
     ASSERT_TRUE(_resize_sb_arr(sb, sb->_capacity * 2));
     EXPECT_GE(sb->_capacity, 80);
 }
 
-TEST_F(ACStringBuilderTest, AppendCharToEmptyBuilder) {
+TEST_F(ACStrBuilderTest, AppendCharToEmptyBuilder) {
     ac_sb_append_char(sb, 'H');
     EXPECT_EQ(sb->length, 1);
-    EXPECT_STREQ(sb->str_arr, "H");
+    EXPECT_STREQ(sb->str, "H");
 }
 
-TEST_F(ACStringBuilderTest, AppendCharToBuilderWithSpareCapacity) {
+TEST_F(ACStrBuilderTest, AppendCharToBuilderWithSpareCapacity) {
     ac_sb_append_char(sb, 'H');
     EXPECT_EQ(sb->length, 1);
 
     ac_sb_append_char(sb, 'i');
     EXPECT_EQ(sb->length, 2);
-    EXPECT_STREQ(sb->str_arr, "Hi");
+    EXPECT_STREQ(sb->str, "Hi");
 }
 
-TEST_F(ACStringBuilderTest, AppendCharToBuilderWithoutSpareCapacity) {
+TEST_F(ACStrBuilderTest, AppendCharToBuilderWithoutSpareCapacity) {
     for (int i = 0; i < 20; ++i) {
         ac_sb_append_char(sb, 'A' + i);
     }
@@ -71,10 +71,10 @@ TEST_F(ACStringBuilderTest, AppendCharToBuilderWithoutSpareCapacity) {
     ac_sb_append_char(sb, 'Z');
     EXPECT_EQ(sb->length, 21);
     EXPECT_EQ(sb->_capacity, 40);
-    EXPECT_STREQ(sb->str_arr, "ABCDEFGHIJKLMNOPQRSTZ");
+    EXPECT_STREQ(sb->str, "ABCDEFGHIJKLMNOPQRSTZ");
 }
 
-TEST_F(ACStringBuilderTest, TestToString) {
+TEST_F(ACStrBuilderTest, TestToString) {
     ac_sb_append_char(sb, 'H');
     ac_sb_append_char(sb, 'i');
 
@@ -82,7 +82,7 @@ TEST_F(ACStringBuilderTest, TestToString) {
     ASSERT_STREQ(str, "Hi");
 }
 
-TEST_F(ACStringBuilderTest, TestGetCharAt) {
+TEST_F(ACStrBuilderTest, TestGetCharAt) {
     ac_sb_append_char(sb, 'H');
     ac_sb_append_char(sb, 'i');
 
@@ -91,23 +91,23 @@ TEST_F(ACStringBuilderTest, TestGetCharAt) {
     EXPECT_EQ(ac_sb_get_char_at(sb, 2), '\0');
 }
 
-TEST_F(ACStringBuilderTest, TestLength) {
+TEST_F(ACStrBuilderTest, TestGetLength) {
     ac_sb_append_char(sb, 'H');
     ac_sb_append_char(sb, 'i');
 
     EXPECT_EQ(ac_sb_length(sb), 2);
 }
 
-TEST_F(ACStringBuilderTest, AppendValidStringToEmptyStringBuilder) {
+TEST_F(ACStrBuilderTest, AppendValidStringToEmptyStringBuilder) {
     ac_sb_append_str(sb, "Hello, ");
     ac_sb_append_str(sb, "world!");
 
     EXPECT_EQ(sb->length, 13);
     EXPECT_EQ(sb->_capacity, 20);
-    EXPECT_STREQ(sb->str_arr, "Hello, world!");
+    EXPECT_STREQ(sb->str, "Hello, world!");
 }
 
-TEST_F(ACStringBuilderTest, AppendValidStringToBuilderWithSpareCapacity) {
+TEST_F(ACStrBuilderTest, AppendValidStringToBuilderWithSpareCapacity) {
     ac_sb_append_char(sb, 'H');
     EXPECT_EQ(sb->length, 1);
 
@@ -115,27 +115,27 @@ TEST_F(ACStringBuilderTest, AppendValidStringToBuilderWithSpareCapacity) {
 
     EXPECT_EQ(sb->length, 13);
     EXPECT_EQ(sb->_capacity, 20);
-    EXPECT_STREQ(sb->str_arr, "Hello, world!");
+    EXPECT_STREQ(sb->str, "Hello, world!");
 }
 
-TEST_F(ACStringBuilderTest, HandleAppendNullPointer) {
+TEST_F(ACStrBuilderTest, HandleAppendNullPointer) {
     ac_sb_append_str(sb, NULL);
 
     EXPECT_EQ(sb->length, 0);
-    EXPECT_STREQ(sb->str_arr, "");
+    EXPECT_STREQ(sb->str, "");
 }
 
-TEST_F(ACStringBuilderTest, AppendOverflowingValidStringToEmptyStringBuilder) {
+TEST_F(ACStrBuilderTest, AppendOverflowingValidStringToEmptyStringBuilder) {
     const char *long_str =
         "This is a very long string that will exceed the initial capacity.";
     ac_sb_append_str(sb, long_str);
 
     EXPECT_EQ(sb->_capacity, 80);
     EXPECT_EQ(sb->length, strlen(long_str));
-    EXPECT_STREQ(sb->str_arr, long_str);
+    EXPECT_STREQ(sb->str, long_str);
 }
 
-TEST_F(ACStringBuilderTest,
+TEST_F(ACStrBuilderTest,
        AppendOverflowingValidStringToBuilderWithoutCapacity) {
     ac_sb_append_char(sb, 'T');
     EXPECT_EQ(sb->length, 1);
@@ -149,7 +149,7 @@ TEST_F(ACStringBuilderTest,
 
     EXPECT_EQ(sb->_capacity, 80);
     EXPECT_EQ(sb->length, strlen(expected_str));
-    EXPECT_STREQ(sb->str_arr, expected_str);
+    EXPECT_STREQ(sb->str, expected_str);
 }
 
 // Main function to run all tests

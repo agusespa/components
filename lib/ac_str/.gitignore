@@ -18,5 +18,5 @@
 **/*.exe
 **/*.a
 **/*.o
-/test/test_ac_list
-/test/test_ac_string
+/test/test_ac_str_list
+/test/test_ac_str_builder
