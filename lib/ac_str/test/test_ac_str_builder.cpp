@@ -61,6 +61,26 @@ TEST_F(ACStrBuilderTest, AppendCharToBuilderWithSpareCapacity) {
     EXPECT_STREQ(sb->str, "Hi");
 }
 
+TEST_F(ACStrBuilderTest, ReplaceChar) {
+    ac_sb_append_char(sb, 'H');
+    ac_sb_append_char(sb, 'i');
+    EXPECT_EQ(sb->length, 2);
+
+    ac_sb_replace_char(sb, 'o', 1);
+    EXPECT_EQ(sb->length, 2);
+    EXPECT_STREQ(sb->str, "Ho");
+}
+
+TEST_F(ACStrBuilderTest, ReplaceCharHandleOutOfBoundsIndex) {
+    ac_sb_append_char(sb, 'H');
+    ac_sb_append_char(sb, 'i');
+    EXPECT_EQ(sb->length, 2);
+
+    ac_sb_replace_char(sb, 'o', 2);
+    EXPECT_EQ(sb->length, 2);
+    EXPECT_STREQ(sb->str, "Hi");
+}
+
 TEST_F(ACStrBuilderTest, AppendCharToBuilderWithoutSpareCapacity) {
     for (int i = 0; i < 20; ++i) {
         ac_sb_append_char(sb, 'A' + i);
@@ -79,7 +99,29 @@ TEST_F(ACStrBuilderTest, TestToString) {
     ac_sb_append_char(sb, 'i');
 
     const char *str = ac_sb_to_string(sb);
-    ASSERT_STREQ(str, "Hi");
+    EXPECT_STREQ(str, "Hi");
+}
+
+TEST_F(ACStrBuilderTest, TestSubstring) {
+    ac_sb_append_char(sb, 'H');
+    ac_sb_append_char(sb, 'e');
+    ac_sb_append_char(sb, 'l');
+    ac_sb_append_char(sb, 'l');
+
+    char *substr = ac_sb_substring(sb, 1, 3);
+    EXPECT_STREQ(substr, "el");
+
+    free(substr);
+}
+
+TEST_F(ACStrBuilderTest, TestSubstringInvalidIndexes) {
+    ac_sb_append_char(sb, 'H');
+    ac_sb_append_char(sb, 'e');
+    ac_sb_append_char(sb, 'l');
+    ac_sb_append_char(sb, 'l');
+
+    const char *substr = ac_sb_substring(sb, 3, 1);
+    EXPECT_STREQ(substr, NULL);
 }
 
 TEST_F(ACStrBuilderTest, TestGetCharAt) {

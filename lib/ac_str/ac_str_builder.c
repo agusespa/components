@@ -45,6 +45,15 @@ void ac_sb_append_char(ACStrBuilder *sb, char c) {
     sb->length++;
 }
 
+void ac_sb_replace_char(ACStrBuilder *sb, char c, size_t i) {
+    if (i >= sb->length) {
+        printf("ERROR: index out-of-bounds\n");
+        return;
+    }
+
+    sb->str[i] = c;
+}
+
 void ac_sb_append_str(ACStrBuilder *sb, const char *str) {
     if (str == NULL) {
         printf("ERROR: Null pointer passed\n");
@@ -69,12 +78,27 @@ void ac_sb_append_str(ACStrBuilder *sb, const char *str) {
         }
     }
 
-    memcpy(sb->str + len, str, len_to_append * sizeof(char));
+    memmove(sb->str + len, str, len_to_append * sizeof(char));
     sb->length += len_to_append;
     sb->str[sb->length] = '\0';
 }
 
 const char *ac_sb_to_string(ACStrBuilder *sb) { return sb->str; }
+
+char *ac_sb_substring(ACStrBuilder *sb, size_t start, size_t end) {
+    if (end >= sb->length || start >= end) {
+        printf("ERROR: index out-of-bounds\n");
+        return NULL;
+    }
+
+    int len = end - start;
+
+    char *substr = (char *)malloc(sizeof(char) * (len + 1));
+    memcpy(substr, sb->str + start, len);
+    substr[len + 1] = '\0';
+
+    return substr;
+}
 
 const char ac_sb_get_char_at(ACStrBuilder *sb, size_t i) {
     if (i >= sb->length) {
