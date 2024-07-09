@@ -2,7 +2,6 @@
 
 ACLRUCache::ListNode::ListNode(int k, int v)
     : key(k), val(v), next(nullptr), prev(nullptr) {}
-ACLRUCache::ListNode::~ListNode() {}
 
 ACLRUCache::ACLRUCache(size_t capacity)
     : cap(capacity), head(nullptr), tail(nullptr) {}

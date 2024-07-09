@@ -11,14 +11,12 @@ class ACLRUCache {
     int get(const int key);
     void put(const int key, const int value);
 
-    class ListNode {
-       public:
+    struct ListNode {
         int key;
         int val;
         ListNode* next;
         ListNode* prev;
         ListNode(int key, int value);
-        ~ListNode();
     };
 
    private:
