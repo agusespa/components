@@ -1,8 +1,5 @@
 #include "ac_lru_cache.h"
 
-#include <iostream>
-#include <ostream>
-
 ACLRUCache::ListNode::ListNode(int k, int v)
     : key(k), val(v), next(nullptr), prev(nullptr) {}
 ACLRUCache::ListNode::~ListNode() {}
@@ -65,8 +62,6 @@ int ACLRUCache::get(int key) {
 }
 
 void ACLRUCache::put(int k, int v) {
-    std::cout << "Attempting to put key: " << k << ", value: " << v
-              << std::endl;
     auto it = cache.find(k);
     if (it != cache.end()) {
         ListNode* node = it->second;
