@@ -1,5 +1,8 @@
 #include "ac_lru_cache.h"
 
+#include <iostream>
+#include <ostream>
+
 ACLRUCache::ListNode::ListNode(int k, int v)
     : key(k), val(v), next(nullptr), prev(nullptr) {}
 ACLRUCache::ListNode::~ListNode() {}
@@ -15,6 +18,36 @@ ACLRUCache::~ACLRUCache() {
     }
 }
 
+void ACLRUCache::addToFront(ListNode* node) {
+    if (!head) {
+        head = node;
+    } else {
+        node->prev = head;
+        node->next = nullptr;
+        head->next = node;
+        if (!tail) {
+            tail = head;
+        }
+        head = node;
+    }
+}
+
+void ACLRUCache::removeNode(ListNode* node) {
+    if (node == tail) {
+        tail = tail->next;
+        tail->prev = nullptr;
+    } else {
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+    }
+}
+
+void ACLRUCache::moveToFront(ListNode* node) {
+    if (node == head) return;
+    removeNode(node);
+    addToFront(node);
+}
+
 int ACLRUCache::get(int key) {
     auto it = cache.find(key);
     if (it == cache.end()) {
@@ -27,38 +60,29 @@ int ACLRUCache::get(int key) {
         return -1;
     }
 
-    if (node == head) {
-        return node->val;
-    }
-
-    if (node == tail) {
-        tail = tail->next;
-        tail->prev = nullptr;
-    } else {
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
-    }
-
-    node->prev = head;
-    node->next = nullptr;
-    head->next = node;
-    head = node;
-
+    moveToFront(node);
     return node->val;
 }
 
 void ACLRUCache::put(int k, int v) {
-    ListNode* new_node = new ListNode(k, v);
-
-    if (!head) {
-        head = new_node;
+    std::cout << "Attempting to put key: " << k << ", value: " << v
+              << std::endl;
+    auto it = cache.find(k);
+    if (it != cache.end()) {
+        ListNode* node = it->second;
+        node->val = v;
+        moveToFront(node);
     } else {
-        head->next = new_node;
-        if (!tail) {
-            tail = head;
-        }
-        head = new_node;
-    }
+        ListNode* newNode = new ListNode(k, v);
 
-    cache[k] = new_node;
+        cache[k] = newNode;
+        addToFront(newNode);
+
+        if (cache.size() > cap) {
+            ListNode* toRemove = tail;
+            removeNode(toRemove);
+            cache.erase(toRemove->key);
+            delete (toRemove);
+        }
+    }
 }
