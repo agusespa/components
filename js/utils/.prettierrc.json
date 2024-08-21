@@ -1,0 +1,24 @@
+{
+    "printWidth": 100,
+    "tabWidth": 4,
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "singleQuote": true,
+    "bracketSameLine": true,
+    "trailingComma": "es5",
+    "endOfLine": "auto",
+    "overrides": [
+        {
+            "files": ["*.json", ".*.json"],
+            "options": {
+                "parser": "json"
+            }
+        },
+        {
+            "files": ["*.md", "LICENSE"],
+            "options": {
+                "parser": "markdown"
+            }
+        }
+    ]
+}

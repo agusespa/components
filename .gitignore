@@ -1,17 +1,5 @@
-# dependencies
-*/node_modules
-/.pnp
-.pnp.js
-__pycache__
-
 # testing
 */coverage
-
-# bundling
-VERSION
-/data/self-service/module.bundle.js
-/module/build
-/module/version.js
 
 # IDEs and editors
 .idea/
@@ -34,6 +22,3 @@ VERSION
 .env.development.local
 .env.test.local
 .env.production.local
-
-npm-debug.log*
-
