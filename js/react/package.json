@@ -41,7 +41,7 @@
         "mini-css-extract-plugin": "^2.9.0",
         "prettier": "^3.3.1",
         "style-loader": "^4.0.0",
-        "typescript": "^5.4.5",
+        "typescript": "^5.5.4",
         "typescript-eslint": "^7.12.0"
     }
 }
