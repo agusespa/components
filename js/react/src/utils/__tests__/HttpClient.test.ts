@@ -68,7 +68,7 @@ describe('HttpClient', () => {
                 json: jest.fn().mockResolvedValueOnce(mockResponse),
             });
 
-            const result = await httpClient.useSecure<{ data: string }>('/secure', {
+            const result = await httpClient.useProtected<{ data: string }>('/secure', {
                 method: 'GET',
             });
             expect(result).toEqual(mockResponse);
@@ -93,7 +93,7 @@ describe('HttpClient', () => {
                     json: jest.fn().mockResolvedValueOnce({ data: 'auth refreshed' }),
                 });
 
-            const result = await httpClient.useSecure<{ data: string }>('/secure', {
+            const result = await httpClient.useProtected<{ data: string }>('/secure', {
                 method: 'GET',
             });
             expect(result).toEqual({ data: 'auth refreshed' });

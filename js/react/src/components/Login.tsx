@@ -70,7 +70,7 @@ const Login = ({ httpClient }: Props): ReactElement => {
             credentials: 'include',
         };
 
-        return httpClient.useSecure<UserData>(`/authapi/user?id=${id}`, options);
+        return httpClient.useProtected<UserData>(`/authapi/user?id=${id}`, options);
     }
 
     return (

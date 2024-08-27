@@ -28,14 +28,14 @@ class HttpClient {
         return this.retry<T>(fetchRequest);
     }
 
-    public async useSecure<T>(endpoint: string, options: RequestInit): Promise<T> {
+    public async useProtected<T>(endpoint: string, options: RequestInit): Promise<T> {
         const fetchRequest = async (): Promise<T> => {
             try {
                 const res = await fetch(this.baseUrl + endpoint, options);
                 if (res.status === 401) {
                     try {
                         const refresh = await this.refreshAuth();
-                        if (refresh) return await this.useSecure(endpoint, options);
+                        if (refresh) return await this.useProtected(endpoint, options);
                     } catch (err) {
                         if (err instanceof HttpError) throw err;
                         else throw new HttpError(-1, 'unknown fetch error', String(err));
