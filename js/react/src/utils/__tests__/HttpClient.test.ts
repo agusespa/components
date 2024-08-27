@@ -113,6 +113,7 @@ describe('HttpClient', () => {
             expect(mockFetch).toHaveBeenCalledWith('https://api.example.com/authapi/refresh', {
                 method: 'GET',
                 credentials: 'include',
+                headers: { Accept: 'application/json+cookie' },
             });
         });
 

@@ -56,6 +56,7 @@ const Login = ({ httpClient }: Props): ReactElement => {
         const options: RequestInit = {
             method: 'GET',
             headers: {
+                Accept: 'application/json+cookie',
                 Authorization: `Basic ${credentials}`,
             },
         };

@@ -32,10 +32,14 @@ class HttpClient {
         const fetchRequest = async (): Promise<T> => {
             try {
                 const res = await fetch(this.baseUrl + endpoint, options);
-
                 if (res.status === 401) {
-                    if (await this.refreshAuth()) return await this.useSecure(endpoint, options);
-                    else throw Error('failed refreashig auth');
+                    try {
+                        const refresh = await this.refreshAuth();
+                        if (refresh) return await this.useSecure(endpoint, options);
+                    } catch (err) {
+                        if (err instanceof HttpError) throw err;
+                        else throw new HttpError(-1, 'unknown fetch error', String(err));
+                    }
                 }
 
                 if (!res.ok) {
@@ -57,6 +61,9 @@ class HttpClient {
             try {
                 const res = await fetch(this.baseUrl + '/authapi/refresh', {
                     method: 'GET',
+                    headers: {
+                        Accept: 'application/json+cookie',
+                    },
                     credentials: 'include',
                 });
 
@@ -64,9 +71,7 @@ class HttpClient {
                     throw new HttpError(res.status, res.statusText);
                 }
 
-                const setCookieHeader = res.headers.get('set-cookie');
-                if (setCookieHeader?.includes('access_token')) return true;
-                else throw new HttpError(401, 'Unauthorized');
+                return true;
             } catch (err) {
                 if (err instanceof HttpError) throw err;
                 else throw new HttpError(-1, 'unknown fetch error', String(err));
