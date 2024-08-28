@@ -32,7 +32,6 @@ const size_t ac_sb_length(ACStrBuilder *sb);
 
 void ac_sb_free(ACStrBuilder **sb);
 
-// TODO iterator
 // TODO Short String Optimization
 
 bool _resize_sb_arr(ACStrBuilder *sb, size_t new_capacity);

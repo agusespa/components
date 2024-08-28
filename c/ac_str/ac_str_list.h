@@ -28,8 +28,6 @@ void ac_str_list_remove(ACStrList *sl, size_t i);
 
 void ac_str_list_free(ACStrList **sl);
 
-// TODO iterator
-
 bool _resize_sl_arr(ACStrList *sl, size_t new_capacity);
 
 #ifdef __cplusplus
