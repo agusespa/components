@@ -44,7 +44,7 @@ const ContextMenu = (props: Props): ReactElement => {
 
     function handleClick(e: MouseEvent): void {
         e.preventDefault();
-        props.setIsShown(false);
+        console.log('pending implementation');
     }
 
     return (
@@ -53,11 +53,11 @@ const ContextMenu = (props: Props): ReactElement => {
                 className={styles.backdrop}
                 onClick={handleClickOutside}
                 onContextMenu={handleClickOutside}
+                data-testid="backdrop"
             />
             <div
                 ref={ref}
                 role="menu"
-                onContextMenu={handleClick}
                 onClick={handleClick}
                 className={styles.contextMenuContainer}
                 style={updatedPosition}></div>

@@ -52,9 +52,11 @@ describe('HttpClient', () => {
                     json: jest.fn().mockResolvedValueOnce({ data: 'retry success' }),
                 });
 
-            const result = await httpClient.usePublic<{ data: string }>('/public', {
+            const promise = httpClient.usePublic<{ data: string }>('/public', {
                 method: 'GET',
             });
+
+            const result = await promise;
             expect(result).toEqual({ data: 'retry success' });
             expect(mockFetch).toHaveBeenCalledTimes(2);
         });
@@ -96,6 +98,7 @@ describe('HttpClient', () => {
             const result = await httpClient.useProtected<{ data: string }>('/secure', {
                 method: 'GET',
             });
+
             expect(result).toEqual({ data: 'auth refreshed' });
             expect(mockFetch).toHaveBeenCalledTimes(3);
         });

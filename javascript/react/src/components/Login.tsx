@@ -1,6 +1,7 @@
 import { ChangeEventHandler, FormEvent, ReactElement, useState } from 'react';
 import * as styles from './Login.module.css';
 import HttpClient from '../utils/HttpClient';
+import HttpError from '../utils/HttpError';
 
 interface Props {
     httpClient: HttpClient;
@@ -13,75 +14,61 @@ interface FormData {
 interface UserAuth {
     user_id: string;
 }
-interface UserData {
-    firstName: string;
-    lastName: string;
-}
 
 const Login = ({ httpClient }: Props): ReactElement => {
     const [formData, setFormData] = useState<FormData>({ username: '', password: '' });
-    const [id, setId] = useState('');
-
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-        e.preventDefault();
-        try {
-            const r = await getLogin(formData);
-            setId(r.user_id);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleFormDataChange: ChangeEventHandler<HTMLInputElement> = (event): void => {
-        const { name, value } = event.target;
+        const { id, value } = event.target;
         setFormData(prevFormData => {
             return {
                 ...prevFormData,
-                [name]: value,
+                [id]: value,
             };
         });
     };
 
-    const handleData = async () => {
-        try {
-            const r = await getUserData(id);
-            console.log(r);
-        } catch (err) {
-            console.error(err);
-        }
+    const handleSubmitClick = (e: FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        setErrorMessage('');
+        void submit(formData);
     };
 
-    async function getLogin(formData: FormData): Promise<UserAuth> {
-        const credentials = btoa(`${formData.username}:${formData.password}`);
+    async function submit(data: FormData): Promise<void> {
+        try {
+            await getLogin(data);
+        } catch (err) {
+            const errorCause = err instanceof HttpError ? err.statusText : 'unknown';
+            setErrorMessage('Login failed: ' + errorCause);
+        }
+    }
+
+    async function getLogin(data: FormData): Promise<UserAuth> {
+        const formData = new window.FormData();
+        formData.append('username', data.username);
+        formData.append('password', data.password);
+
         const options: RequestInit = {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 Accept: 'application/json+cookie',
-                Authorization: `Basic ${credentials}`,
             },
+            body: formData,
         };
 
         return httpClient.usePublic<UserAuth>('/authapi/login', options);
     }
 
-    async function getUserData(id: string): Promise<UserData> {
-        const options: RequestInit = {
-            method: 'GET',
-            credentials: 'include',
-        };
-
-        return httpClient.useProtected<UserData>(`/authapi/user?id=${id}`, options);
-    }
-
     return (
         <div className={styles.container}>
             <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitClick}>
                 <div>
                     <label htmlFor="username">Username:</label>
                     <input
                         type="text"
-                        name="username"
+                        id="username"
                         value={formData.username}
                         onChange={handleFormDataChange}
                     />
@@ -90,14 +77,14 @@ const Login = ({ httpClient }: Props): ReactElement => {
                     <label htmlFor="password">Password:</label>
                     <input
                         type="password"
-                        name="password"
+                        id="password"
                         value={formData.password}
                         onChange={handleFormDataChange}
                     />
                 </div>
                 <button type="submit">Login</button>
             </form>
-            <button onClick={handleData}>Fetch User Data</button>
+            {errorMessage !== '' ? <p>{errorMessage}</p> : null}
         </div>
     );
 };
