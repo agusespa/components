@@ -1,5 +1,5 @@
 import 'jest';
-import { getUpdatedCSSPosition } from '../helpers';
+import { getUpdatedCSSPosition } from '../styles';
 
 describe('getUpdatedCSSPosition', () => {
     beforeAll(() => {

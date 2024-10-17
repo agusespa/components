@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "esnext",
+        "moduleResolution": "nodenext",
+        "allowImportingTsExtensions": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"]
+}
