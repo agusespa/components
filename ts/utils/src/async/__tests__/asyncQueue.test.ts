@@ -1,18 +1,18 @@
 import { describe, it, expect } from '@jest/globals';
-import AsyncQueue from '../asyncQueue';
+import AsyncQueue from '../asyncQueue.ts';
+
+function task(result: string, delay: number): () => Promise<string> {
+    return () =>
+        new Promise(resolve => {
+            setTimeout(() => {
+                resolve(result);
+            }, delay);
+        });
+}
 
 describe('AsyncQueue', () => {
-    function task(result, delay) {
-        return () =>
-            new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(result);
-                }, delay);
-            });
-    }
-
     it('should process one single task', async () => {
-        const queue = new AsyncQueue(2);
+        const queue = new AsyncQueue<string>(2);
 
         const result = await queue.enqueue(task('Result', 30));
 
@@ -20,7 +20,7 @@ describe('AsyncQueue', () => {
     });
 
     it('should return the correct result for each task', async () => {
-        const queue = new AsyncQueue(2);
+        const queue = new AsyncQueue<string>(2);
 
         const tasks = [
             queue.enqueue(task('Result 1', 100)),
@@ -35,11 +35,11 @@ describe('AsyncQueue', () => {
     });
 
     it('should run tasks concurrently up to the specified concurrency limit', async () => {
-        const queue = new AsyncQueue(2);
+        const queue = new AsyncQueue<string>(2);
         let activeTasks = 0;
         let maxActiveTasks = 0;
 
-        const trackConcurrency = async t => {
+        const trackConcurrency = async (t: () => Promise<string>): Promise<string> => {
             activeTasks++;
             maxActiveTasks = Math.max(maxActiveTasks, activeTasks);
 
@@ -63,9 +63,9 @@ describe('AsyncQueue', () => {
     });
 
     it('should handle task errors properly', async () => {
-        const queue = new AsyncQueue(2);
+        const queue = new AsyncQueue<string>(2);
 
-        function taskThatFails(delay) {
+        function taskThatFails(delay: number): () => Promise<never> {
             return () =>
                 new Promise((_, reject) => {
                     setTimeout(() => reject(new Error('Task failed')), delay);
@@ -83,9 +83,9 @@ describe('AsyncQueue', () => {
     });
 
     it('should continue processing remaining tasks after a failure', async () => {
-        const queue = new AsyncQueue(2);
+        const queue = new AsyncQueue<string>(2);
 
-        function taskThatFails(delay) {
+        function taskThatFails(delay: number): () => Promise<never> {
             return () =>
                 new Promise((_, reject) => {
                     setTimeout(() => reject(new Error('Task failed')), delay);
@@ -104,3 +104,4 @@ describe('AsyncQueue', () => {
         expect(results).toEqual(['Result 1', 'Task failed', 'Result 2', 'Result 3']);
     });
 });
+

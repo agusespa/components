@@ -1,4 +1,4 @@
-import { CSSPosition, CursorPosition } from '../models/utils';
+import { CSSPosition, CursorPosition } from "./types";
 
 export const getUpdatedCSSPosition = (
     width: number,

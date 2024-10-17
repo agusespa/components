@@ -1,5 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
-import HttpError from '../HttpError';
+import HttpError from '../HttpError.ts';
 
 describe('HttpError', () => {
     it('should create an instance with correct properties', () => {

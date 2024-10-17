@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
-import HttpClient from '../HttpClient';
-import HttpError from '../HttpError';
+import HttpClient from '../HttpClient.ts';
+import HttpError from '../HttpError.ts';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
