@@ -3,7 +3,7 @@
  * @description Provides an HttpClient class for making HTTP requests with retry and authentication capabilities.
  */
 
-import HttpError from './HttpError';
+import HttpError from './HttpError.ts';
 
 /**
  * HttpClient class for making public and protected HTTP requests with retry attempts.

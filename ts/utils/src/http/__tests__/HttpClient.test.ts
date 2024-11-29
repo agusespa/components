@@ -31,6 +31,14 @@ describe('HttpClient', () => {
             });
         });
 
+        it('should throw a generic Error for failed preflight requests', async () => {
+            mockFetch.mockRejectedValueOnce(new Error('Network Error'));
+
+            await expect(httpClient.usePublic('/public', { method: 'GET' })).rejects.toThrow(Error);
+
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+
         it('should throw HttpError for non-ok responses', async () => {
             mockFetch.mockResolvedValueOnce({
                 ok: false,
@@ -120,6 +128,12 @@ describe('HttpClient', () => {
             });
         });
 
+        it('should throw a generic Error for failed preflight requests', async () => {
+            mockFetch.mockRejectedValueOnce(new Error('Network Error'));
+
+            await expect((httpClient as any).refreshAuth()).rejects.toThrow(Error);
+        });
+
         it('should throw HttpError when refresh fails', async () => {
             mockFetch.mockResolvedValueOnce({
                 ok: false,
@@ -149,6 +163,38 @@ describe('HttpClient', () => {
 
             await expect((httpClient as any).retry(mockFn)).rejects.toThrow(HttpError);
             expect(mockFn).toHaveBeenCalledTimes(3);
+        });
+    });
+
+    describe('exponential backoff', () => {
+        it('should return exponential backoff time based on tries', () => {
+            const tries = 3;
+            const baseDelay = 1000 * Math.pow(2, tries - 1);
+
+            const method = httpClient['getExponentialBackoffTime'].bind(httpClient);
+
+            jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+            const result = method(tries);
+
+            const expected = baseDelay + 250;
+
+            expect(result).toBeCloseTo(expected, 0);
+        });
+
+        it('should add jitter between 0 and 500ms', () => {
+            const tries = 2;
+            const baseDelay = 1000 * Math.pow(2, tries - 1);
+
+            const method = httpClient['getExponentialBackoffTime'].bind(httpClient);
+
+            for (let i = 0; i < 100; i++) {
+                const result = method(tries);
+                const jitter = result - baseDelay;
+
+                expect(jitter).toBeGreaterThanOrEqual(0);
+                expect(jitter).toBeLessThanOrEqual(500);
+            }
         });
     });
 });
