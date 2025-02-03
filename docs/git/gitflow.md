@@ -1,51 +1,77 @@
-# Git workflow (from dev to deploy)
-1. Use 'feature' branches for local development.
-2. Push and merge into 'develop' branch.
-3. Create a new 'release' branch from 'develop' branch.
-4. Run the pipeline from the release branch to generate a docker image with the new bundle.
+# GitFlow Development Workflow
 
-## Branches
-#### 'main'
-Default and Protected.
-Code that has been deployed to PROD and verified.
-Only merge into 'main' from 'release' branches. 
-#### 'release/'
-Read-only. Full deployment pipeline.
-A release branch will hold the version of the code to go through the deployment process: DEV -> TEST -> PROD.
-Base the release branches on the develop branch and use the module's package version for the branch name: `release/[version]`.
-See [versioning](#versioning) section below.
-Remove after merging into 'main' branch or if rejected.
-#### 'develop'
-Code that is ready to be deployed for testing to DEV and TEST environments. Not for local development.
-##### 'feature/', 'bugfix/' and other branches
-Name them so: '[type]/[issue-number]/[task-title]'
+This project follows the **GitFlow** branching model, which structures development using separate branches for features, releases, and production deployments. 
+Below are the guidelines for contributing and deploying.
 
-### Messages
-To maintain an explicit commit history that makes it easy to cherrypick, please adhere to  the Conventional Commits Specification. The commit message should be structured as follows:
-```
-<type>[optional scope]: <description>
+## Branching Strategy
 
-[optional body]
+Gitflow defines specific branch types:
+- `main` – The stable branch containing production-ready code.
+- `develop` – The integration branch where features are merged before release.
+- `feature/*` – Used for developing new features.
+- `release/*` – Used for preparing a release.
+- `hotfix/*` – Used for critical fixes in production.
 
-[optional footer(s)]
-```
-Most common types are:
-- fix: patches a bug in your codebase (this correlates with PATCH in Semantic Versioning)
-- feat: introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning)
-- chore: changes to infrastructure, build processes, documentation, cleanup
-- refactor
-- build
+## Development Workflow
+1. **Branch off from `develop`**
+   ```sh
+   git switch develop
+   git pull origin develop
+   git switch -c feature/your-feature-name
+   ```
+2. **Work on your changes**
+   ```sh
+   git add .
+   git commit -m "feat: implement new feature"
+   ```
+3. **Rebase onto the latest `develop` before merging**
+   ```sh
+   git switch develop
+   git pull origin develop
+   git switch feature/your-feature-name
+   git rebase develop
+   ```
+4. **Push and create a Merge/Pull Request (PR)**
+   ```sh
+   git push origin feature/your-feature-name
+   ```
+   Ensure all automated tests pass before requesting a review.
+   A reviewer must approve the PR before merging.
+   
+5. **Merge the branch into `develop`**
+   Once approved, merge the branch into `develop` (squash recommended to keep a clean history).
+   Delete the feature branch after merging.
 
-### Custom Git Hooks
-#### Setup
-This repository contains custom hooks. To use them (only UNIX), add this to the .git/config file:
-```
-hooksPath = ./scripts/hooks
-```
-#### Options
-If you need to skip the hook for a specific commit, you can use the `--no-verify` option:
-```
-git commit -m "message" --no-verify
-```
-#### Test
-See corresponding *-test.md
+## Deployment Process
+### Staging Deployment (Manual)
+Once `develop` is stable and ready for release, create a release branch:
+   ```sh
+   git switch develop
+   git pull origin develop
+   git switch -c release/x.y.z
+   ```
+Run the CI/CD deployment to staging environment.
+### Production Deployment (Manual)
+Once staging is verified, a **manual deployment** to production is required.
+To deploy to production, merge the release branch into `main` and create a Git tag for the release:
+  ```sh
+  git tag v1.0.0
+  git push origin v1.0.0
+  ```
+This triggers a deployment pipeline that releases the tagged version to production.
+
+## Handling Hotfixes
+- For urgent fixes in production:
+  ```sh
+  git switch main
+  git pull origin main
+  git switch -c hotfix/x.y.z-fix
+  ```
+- After applying the fix:
+  ```sh
+  git commit -m "Hotfix: Describe the fix"
+  git push origin hotfix/x.y.z-fix
+  ```
+- Release to staging and verify.
+- Follow production deployment process.
+- Finaly merge into `develop`.
