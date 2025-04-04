@@ -7,21 +7,22 @@ echo "╚═══════════════════════�
 set -e
 
 staged_files=$(git diff --cached --name-only --diff-filter=ACM -- 'src/**/*')
+js_ts_files=$(echo "$staged_files" | grep -E '\.(js|jsx|ts|tsx)$' || true)
 
-if [ -n "$staged_files" ]; then
-    npx prettier --loglevel warn --write $staged_files
-    git add $staged_module_files
+if [ -n "$js_ts_files" ]; then
+    npx prettier --loglevel warn --write $js_ts_files
+    git add $js_ts_files
 
-    js_ts_files=$(echo "$staged_files" | grep -E '\.(js|jsx|ts|tsx)$' || true)
     if [ -n "$js_ts_files" ]; then
-        npx eslint --quiet $js_ts_files || (echo "ERROR ESLint failed" && exit 1)
+        npx eslint --quiet $js_ts_files || (echo "ERROR: ESLint failed" && exit 1)
     fi
 
     scss_css_files=$(echo "$staged_files" | grep -E '\.(scss|css)$' || true)
     if [ -n "$scss_css_files" ]; then
-        npx stylelint --quiet $scss_css_files || (echo "ERROR Stylelint failed" && exit 1)
+        npx stylelint --quiet $scss_css_files || (echo "ERROR: Stylelint failed" && exit 1)
     fi
 
+    test_files=""
     if [ -n "$js_ts_files" ]; then
         for file in $js_ts_files; do
             dir=$(dirname "$file")
@@ -29,9 +30,15 @@ if [ -n "$staged_files" ]; then
             extension="${filename##*.}"
             filename="${filename%.*}"
             test_file="$dir/__tests__/$filename.test.$extension"
+
             if [ -e "$test_file" ]; then
-                npm run test $test_file || (echo "ERROR: Tests failed" && exit 1)
+                test_files="$test_files $test_file"
             fi
         done
+
+        if [ -n "$test_files" ]; then
+            npm run test -- $test_files || (echo "ERROR: Tests failed" && exit 1)
+        fi
     fi
 fi
+
