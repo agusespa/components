@@ -1,0 +1,4 @@
+classifytf_env/
+model/
+results/
+__pycache__/
