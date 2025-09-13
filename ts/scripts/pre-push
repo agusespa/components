@@ -20,3 +20,4 @@ echo ">> Running build..."
 npm run build > /dev/null 2>&1 || { echo "ERROR: Build failed"; exit 1; }
 
 echo "✅ All checks passed!"
+exit 0
